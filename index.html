@@ -15,20 +15,6 @@
       <input id="search-field" type="text" />
       <p>results </p>
       <select id="results"></select>
-
-      <script>
-
-          $('#search-field').keyup(function (e) {
-            if (e.which == 13) {  // detect the enter key
-              searchNominatim()
-            }
-          });
-
-          $("#results").change(function(test){
-            mapDefinition()
-          });
-
-      </script>
     </div>
     <div id="map"></div>
   </body>

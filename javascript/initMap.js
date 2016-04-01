@@ -1,3 +1,5 @@
+
+
 function initMap(){
 	google.maps.event.addDomListener(window, "load", initialize);
 }
@@ -31,6 +33,16 @@ function initialize() {
 		}
 	});
 	drawingManager.setMap(map);
+	
+	$('#search-field').keyup(function (e) {
+		if (e.which == 13) {  // detect the enter key
+			searchNominatim()
+		}
+	});
+
+	$("#results").change(function(test){
+		mapDefinition()
+	});
 }
 searchNominatim = function(){
   results = {};
