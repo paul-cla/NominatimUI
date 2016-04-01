@@ -22,7 +22,6 @@ function initialize() {
 				google.maps.drawing.OverlayType.RECTANGLE
 			]
 		},
-		markerOptions: {icon: 'images/beachflag.png'},
 		circleOptions: {
 			fillColor: '#ffff00',
 			fillOpacity: 1,
@@ -33,7 +32,7 @@ function initialize() {
 		}
 	});
 	drawingManager.setMap(map);
-	
+
 	$('#search-field').keyup(function (e) {
 		if (e.which == 13) {  // detect the enter key
 			searchNominatim()
