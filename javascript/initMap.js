@@ -1,4 +1,4 @@
-function initMap() {
+function initialize() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 53.476822, lng: -2.255360}, 
 		zoom: 6
@@ -28,4 +28,7 @@ function initMap() {
 		}
 	});
 	drawingManager.setMap(map);
+}
+function initMap(){
+	google.maps.event.addDomListener(window, "load", initialize);
 }

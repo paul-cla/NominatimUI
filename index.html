@@ -42,7 +42,7 @@ searchNominatim = function(){
   $.ajax({
     dataType: "json",
     type: "Get",
-    url: "http://nominatim.openstreetmap.org/search.php?format=json&polygon_geojson=1&email=slummock@gmail.com&q=" + searchTerm + "&countrycodes="+country,
+    url: "http://nominatim.openstreetmap.org/search.php?format=json&polygon_geojson=1namedetails=1&email=slummock@gmail.com&q=" + searchTerm + "&countrycodes="+country,
     success: function (data) {
       $("#results").empty()
       $.each(data,function(index, item){
@@ -73,11 +73,11 @@ drawGeoJson = function(data){
         map.data.remove(feature);
   });
 
-  var feature = JSON.parse('{"type":"FeatureCollection","features":[{"type":"Feature"}]}');
+  var featureCollection = JSON.parse('{"type":"FeatureCollection","features":[{"type":"Feature"}]}');
 
-  feature.features[0].geometry = data.geojson;
+  featureCollection.features[0].geometry = data.geojson;
 
-  map.data.addGeoJson(feature);
+  map.data.addGeoJson(featureCollection);
   map.data.setStyle({
     fillColor: 'green'
   });
