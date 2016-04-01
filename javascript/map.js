@@ -1,8 +1,7 @@
-
-
 function initMap(){
 	google.maps.event.addDomListener(window, "load", initialize);
 }
+
 function initialize() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 53.476822, lng: -2.255360}, 
@@ -43,6 +42,7 @@ function initialize() {
 		mapDefinition()
 	});
 }
+
 searchNominatim = function(){
   results = {};
   var searchTerm= $('#search-field').val()
@@ -96,3 +96,8 @@ drawGeoJson = function(data){
   var boundingBox = new google.maps.LatLngBounds(boundingSw, boundingNe)
   map.fitBounds(boundingBox)
 }
+
+//Need to add reverse look up functionality that does a search for each zoom level
+//&zoom=11
+//&addressdetails=1
+//http://nominatim.openstreetmap.org/reverse?format=json&osm_type=R&lat=53.479105&lon=-2.242910&zoom=10&addressdetails=1
