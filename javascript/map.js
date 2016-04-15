@@ -8,27 +8,15 @@ function initialize() {
 		zoom: 6
 	});
 
-	var drawingManager = new google.maps.drawing.DrawingManager({
-		drawingMode: google.maps.drawing.OverlayType.MARKER,
-		drawingControl: true,
-		drawingControlOptions: {
-			position: google.maps.ControlPosition.TOP_CENTER,
-			drawingModes: [
-				google.maps.drawing.OverlayType.MARKER,
-				google.maps.drawing.OverlayType.CIRCLE,
-				google.maps.drawing.OverlayType.POLYGON,
-				google.maps.drawing.OverlayType.POLYLINE,
-				google.maps.drawing.OverlayType.RECTANGLE
-			]
-		},
-		circleOptions: {
-			fillColor: '#ffff00',
-			fillOpacity: 1,
-			strokeWeight: 5,
-			clickable: false,
-			editable: true,
-			zIndex: 1
-		}
+	drawingManager = new google.maps.drawing.DrawingManager({
+		drawingMode: google.maps.drawing.OverlayType.POLYGON,
+		drawingControl: false,
+    polygonOptions: {
+      strokeWeight: 0,
+      fillOpacity: 0.45,
+      editable: true,
+      draggable: true
+    }
 	});
 	drawingManager.setMap(map);
 
@@ -41,6 +29,68 @@ function initialize() {
 	$("#results").change(function(test){
 		mapDefinition()
 	});
+
+  $(function() {
+    $( "#slider" ).slider();
+  });
+
+  google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
+
+    var coordinates = (polygon.getPath().getArray());
+    updatePolygonData(coordinates);
+    drawingManager.setDrawingMode(null);
+
+    google.maps.event.addListener(polygon.getPath(), 'insert_at', function() {
+      updatePolygonData(coordinates);
+    });
+
+    google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
+      updatePolygonData(coordinates);
+    });
+
+    google.maps.event.addListener(polygon, 'click', function (event) {
+      if(confirm("Reset polygon?")){
+        polygon.setMap(null);
+        updatePolygonData(null);
+        drawingManager.setDrawingMode("polygon");
+      }
+    });
+
+    google.maps.event.addListener(polygon, 'rightclick', function(event) {
+      if (event.vertex == undefined) {
+        return;
+      } else {
+        var path = polygon.getPath();
+        path.removeAt(event.vertex);
+      }
+    });
+
+    google.maps.event.addListener(polygon, 'mouseover', function (event){
+      console.log("spam");
+      console.log(getCentreOfPolygon(polygon.getPath().getArray()));
+    });
+
+    google.maps.event.addListener(polygon, 'mouseout', function (event){
+      console.log("eggs");
+    });
+
+  });
+}
+
+getCentreOfPolygon = function(coordinates){
+  var total=[0,0];
+  coordinates.forEach(function(pair){
+    total[0] += pair.lat();
+    total[1] += pair.lng();
+  });
+  var centre = []
+  centre[0] = total[0]/coordinates.length;
+  centre[1] = total[1]/coordinates.length;
+  return centre;
+}
+
+updatePolygonData = function(coordinates){
+  document.getElementById("polygon-data").value = coordinates;
 }
 
 searchNominatim = function(){
@@ -75,13 +125,14 @@ mapDefinition = function(){
     drawGeoJson(object)  
 }
 
-drawGeoJson = function(data){
-
+drawGeoJson = function(data){  
   map.data.forEach(function(feature) {
-        map.data.remove(feature);
+    map.data.remove(feature);
   });
 
   var featureCollection = JSON.parse('{"type":"FeatureCollection","features":[{"type":"Feature"}]}');
+//here be dragons
+  data = simplifyGeoJsonPoly(data)
 
   featureCollection.features[0].geometry = data.geojson;
 
@@ -96,8 +147,7 @@ drawGeoJson = function(data){
   var boundingBox = new google.maps.LatLngBounds(boundingSw, boundingNe)
   map.fitBounds(boundingBox)
 }
-
-//Need to add reverse look up functionality that does a search for each zoom level
+//Need to add reverse look up functionality that does a search for each zoom level 1-15(admin levels) 1 being uk, 15 being building on street
 //&zoom=11
 //&addressdetails=1
 //http://nominatim.openstreetmap.org/reverse?format=json&osm_type=R&lat=53.479105&lon=-2.242910&zoom=10&addressdetails=1

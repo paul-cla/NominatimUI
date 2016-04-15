@@ -4,8 +4,8 @@ html, body {
 	padding: 0;
 }
 #map {
-	height: calc(100% - 200px);
+	height: 100%;
 }
 #options{
-	height: 200px;
+	height: auto;
 }
