@@ -125,7 +125,8 @@ searchNominatim = function(){
 
 mapDefinition = function(){
   var key = $("#results").val();
-  var object = results[key];
+
+  var object = JSON.parse(JSON.stringify(results[key]));
   if(typeof nominatimArea!="undefined")
   {
     nominatimArea.setMap(null)
