@@ -1,3 +1,5 @@
+var globalpolygon;
+
 function initMap(){
 	google.maps.event.addDomListener(window, "load", initialize);
 }
@@ -31,7 +33,15 @@ function initialize() {
 	});
 
   $(function() {
-    $( "#slider" ).slider();
+    $( "#slider" ).slider({
+      max:10000,
+      min:100,
+      value:10000,
+      change: function( event, ui ){
+        document.getElementById("slider-value").value = ((1/ui.value).toFixed(4))/1;
+        mapDefinition();
+      }
+    });
   });
 
   google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
@@ -39,6 +49,7 @@ function initialize() {
     var coordinates = (polygon.getPath().getArray());
     updatePolygonData(coordinates);
     drawingManager.setDrawingMode(null);
+    globalpolygon = polygon;
 
     google.maps.event.addListener(polygon.getPath(), 'insert_at', function() {
       updatePolygonData(coordinates);
@@ -66,12 +77,12 @@ function initialize() {
     });
 
     google.maps.event.addListener(polygon, 'mouseover', function (event){
-      console.log("spam");
+      console.log("mouseover shape");
       console.log(getCentreOfPolygon(polygon.getPath().getArray()));
     });
 
     google.maps.event.addListener(polygon, 'mouseout', function (event){
-      console.log("eggs");
+      console.log("mouse off shape");
     });
 
   });
@@ -131,7 +142,7 @@ drawGeoJson = function(data){
   });
 
   var featureCollection = JSON.parse('{"type":"FeatureCollection","features":[{"type":"Feature"}]}');
-//here be dragons
+//here be dragons, need to start using require and pull in the libraries properly
   data = simplifyGeoJsonPoly(data)
 
   featureCollection.features[0].geometry = data.geojson;

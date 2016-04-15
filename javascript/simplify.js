@@ -1,6 +1,8 @@
 var simplifyGeoJsonPoly = function (data) {
-  coordinates = data.geojson.coordinates[0];
-  var test = simplifyGeometry(coordinates, 0.001);
+  var copy = JSON.parse(JSON.stringify(data));
+  coordinates = copy.geojson.coordinates[0];
+  var sliderValue =  1/$( "#slider" ).slider( "option", "value" );
+  var test = simplifyGeometry(coordinates, sliderValue);
 
   data.geojson.coordinates[0] = test;
   return data;
