@@ -12,16 +12,30 @@
   </head>
   <body>
     <div id="options">
-      <p>country code</p>
-      <select id="country-codes"></select>
-      <p>search text</p>
-      <input id="search-field" type="text" />
-      <p>results </p>
-      <select id="results"></select>
-      <p>custom polygon</p>
-      <textarea id="polygon-data"></textarea>      
-      <div id="slider"></div>
-      <input type="text" id="slider-value">
+      <div class="row">
+        <p>Country code</p>
+        <select id="country-codes"></select>
+      </div>
+      <div class="row">
+        <p>Search text</p>
+        <input id="search-field" type="text" />
+      </div>
+      <div class="row">
+        <p>Results </p>
+        <select id="results"></select>
+      </div>
+      <div class="row">
+        <p>Custom polygon</p>
+        <textarea id="polygon-data" readonly></textarea>      
+      </div>
+      <div class="row">
+        <p>Shape granularity</p>
+        <div id="slider"></div>
+      </div>
+      <div class="row">
+        <p></p>
+        <input type="text" id="slider-value">
+      </div>
     </div>
     <div id="map"></div>
   </body>
