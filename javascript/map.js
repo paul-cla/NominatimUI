@@ -34,7 +34,7 @@ function initialize() {
 
   $(function() {
     $( "#slider" ).slider({
-      max:10000,
+      max:10000 ,
       min:100,
       value:10000,
       change: function( event, ui ){
@@ -100,10 +100,30 @@ getCentreOfPolygon = function(coordinates){
   return centre;
 }
 
-updatePolygonData = function(coordinates){
-  document.getElementById("polygon-data").value = coordinates;
+updatePolygonDataAsFeatureCollection = function(coordinates){
+  var geometry={};
+  var coordinatesArray=[];
+  coordinates.forEach(function(pair){
+    var lat = pair.lat();
+    var lon = pair.lng();
+    coordinatesArray.push([lon,lat]);
+  });
+  geometry.type = "polygon";
+  geometry.coordinates = [coordinatesArray];
+  var featureCollection = createFeatureColletionFromGeometry(geometry);
+  document.getElementById("polygon-data").value = JSON.stringify(featureCollection);
 }
 
+updatePolygonData = function(coordinates){
+  var geometry={};
+  var coordinatesArray=[];
+  coordinates.forEach(function(pair){
+    var lat = pair.lat();
+    var lon = pair.lng();
+    coordinatesArray.push([lon,lat]);
+  });
+  document.getElementById("polygon-data").value = JSON.stringify([coordinatesArray]);
+}
 searchNominatim = function(){
   results = {};
   var searchTerm= $('#search-field').val()
@@ -137,20 +157,30 @@ mapDefinition = function(){
     drawGeoJson(object)  
 }
 
-drawGeoJson = function(data){  
+createFeatureColletionFromGeometry = function (geometry){
+  var featureCollection = JSON.parse('{"type":"FeatureCollection","features":[{"type":"Feature"}]}');
+  featureCollection.features[0].geometry = geometry;
+  return featureCollection;
+}
+
+clearMap = function(){
   map.data.forEach(function(feature) {
     map.data.remove(feature);
   });
+}
 
-  var featureCollection = JSON.parse('{"type":"FeatureCollection","features":[{"type":"Feature"}]}');
-//here be dragons, need to start using require and pull in the libraries properly
+drawGeoJson = function(data){  
+  clearMap();
+  //here be dragons, need to start using require and pull in the libraries properly
   data = simplifyGeoJsonPoly(data)
 
-  featureCollection.features[0].geometry = data.geojson;
 
-  map.data.addGeoJson(featureCollection);
+  var featureCollection2 = createFeatureColletionFromGeometry(data.geojson);
+  map.data.addGeoJson(featureCollection2);
   map.data.setStyle({
     fillColor: 'green'
+/*    ,editable: true
+    ,draggable: true */   
   });
 
   var boundingSw = new google.maps.LatLng(data.boundingbox[0], data.boundingbox[2]);
