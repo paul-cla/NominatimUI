@@ -121,7 +121,8 @@ updatePolygonData = function(coordinates){
     var lat = pair.lat();
     var lon = pair.lng();
     coordinatesArray.push([lon,lat]);
-  });
+  });  
+  coordinatesArray.push([coordinates[0].lng(),coordinates[0].lat()]);
   document.getElementById("polygon-data").value = JSON.stringify([coordinatesArray]);
 }
 searchNominatim = function(){
